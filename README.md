@@ -26,8 +26,8 @@ Dungeon Doom Souls combines dungeon crawling and challenging combat available as
 
 | To Do | In Progress | Done |
 | --- | --- | --- |
-| Add old dungeon-doom-souls code & assets | Godot Project init | Git config init |
-| Refactor old dungeon-doom-souls code |  | Enable git LFS |
+|  | Refactor old dungeon-doom-souls code | Godot Project init |
+|  |  | Add old dungeon-doom-souls code & assets |
 
 
 ## Getting Started
