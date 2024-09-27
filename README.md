@@ -1,18 +1,18 @@
 
 # CODENAME: LEVELS
 
-A **PROTOTYPE** for my future commercial dungeon crawler FPS game heavily inspired by "Pixel Dungeon", "DOOM", and "DarkSouls/Elden-Ring". This was built with the [Godot Engine](https://godotengine.org/), featuring multiplayer through *Facepunch*'s open source *Steamworks* library.
+A **PROTOTYPE** for my future commercial dungeon crawler FPS game heavily inspired by "Pixel Dungeon", "DOOM", and "DarkSouls/Elden-Ring". This was built with the [Godot Engine](https://godotengine.org/), featuring multiplayer through *GodotSteam* & *GodotSteam_CSharpBindings* addons. The addons simply provide a wrapper for the official *Steamworks* library.
 NOTE: AS STATED BEFORE, THIS IS THE PROTOTYPE FOR MY FUTURE TO BE RELEASED GAME SO THERE MAY BE BUGS, UNEXPECTED BEHAVIOR, MASSIVE BREAKING CHANGES, AND SO ON.
 
 ## Overview
 
-Dungeon Doom Souls combines dungeon crawling and challenging combat available as an open-source project. Developed using the Godot Engine with C#, this game uses Facepunch's open-source Steamworks library to facilitate multiplayer gameplay. Facepunch's Steamworks is a modern, well maintained C# wrapper for the Steamworks API and it provides a more streamlined, higher-level interface compared to Steamworks.NET (Which aims to be a more faithful wrapper, but I would argue at the cost of simplicity or ease of use).
+Dungeon Doom Souls combines dungeon crawling and challenging combat available as an open-source project. Developed using the Godot Engine with C#, this game uses Facepunch's open-source Steamworks library to facilitate multiplayer gameplay.
 
 ## Features
 
 - **Godot Engine**: Harnessing the power of the open-source Godot Engine for game development.
 - **C# Integration**: Utilizing C# for robust game logic and interactings with the Steamworks API.
-- **Multiplayer Support**: Leveraging Facepunch's Steamworks library for multiplayer gameplay.
+- **Multiplayer Support**: Leveraging Steamworks wrapper library for multiplayer gameplay.
 
 ## Timeline - Roadmap
 
@@ -72,7 +72,6 @@ This project is completely private and is not intended for public use or distrib
 ## Acknowledgments
 
 - [Godot Engine](https://godotengine.org/) for their open-source game development platform.
-- [Facepunch.Steamworks](https://github.com/Facepunch/Facepunch.Steamworks) for their open-source game networking library or as they would put it, "Another fucking c# Steamworks implementation".
 
 ---
 

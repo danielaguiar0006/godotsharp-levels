@@ -18,7 +18,7 @@ public partial class SteamDemo : Node
         var isSteamRunning = Steam.IsSteamRunning();
         if (!isSteamRunning)
         {
-            GD.Print("Steam is not running.");
+            GD.PrintErr("Steam is not running.");
             return;
         }
 
