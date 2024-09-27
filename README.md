@@ -26,8 +26,8 @@ Dungeon Doom Souls combines dungeon crawling and challenging combat available as
 
 | To Do | In Progress | Done |
 | --- | --- | --- |
-|  | Refactor old dungeon-doom-souls code | Godot Project init |
-|  |  | Add old dungeon-doom-souls code & assets |
+|  | Refactor old dungeon-doom-souls code | Add GodotSteam extension + LauraWebdev's C# Bindings into project addons/ folder |
+|  | Get Started with GodotSteam extension |  |
 
 
 ## Getting Started
