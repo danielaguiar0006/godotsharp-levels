@@ -14,19 +14,31 @@ public partial class SteamManager : Node
 
     public override void _Ready()
     {
-        const int ERROR_CODE = 1; // Exit code for errors > 0
-
         if (Instance != null)
         {
+            const int ERROR_CODE = 1; // Exit code for errors > 0
             GD.PrintErr("Multiple instances of SteamManager detected!");
             GetTree().Quit(ERROR_CODE);
         }
-
-        GD.Print("SteamManager ready to initialize Steam");
         Instance = this;
+        GD.Print("SteamManager ready to initialize Steam");
+
+        InitializeSteam();
     }
 
-    public void InitializeSteam()
+    public override void _Process(double delta)
+    {
+        Steam.RunCallbacks();
+    }
+
+    public override void _ExitTree()
+    {
+        // SHUTDOWN STEAM
+        GD.Print("Shutting down Steam...");
+        Steam.SteamShutdown();
+    }
+
+    private void InitializeSteam()
     {
         var initResult = Steam.SteamInit();
         if (initResult.Status != SteamInitStatus.SteamworksActive)
@@ -35,7 +47,6 @@ public partial class SteamManager : Node
             GetTree().Quit(((int)initResult.Status));
             return;
         }
-
         GD.Print("Steam initialized successfully: " + initResult.Verbal);
     }
 }

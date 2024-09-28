@@ -1,12 +1,20 @@
+/*
+ * This class is responsible for managing the game state and handling game-specific logic.
+ * Such logic includes managing game states (e.g., start, pause, end), handling level transitions,
+ * managing player data and game progress, etc...
+ * It interacts with the Global class to apply global settings when necessary.
+ */
+
 using Godot;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Net.Sockets;
 //REMOVE ME: using Game.Networking;
 
-
 public partial class GameManager : Node
 {
+    public static GameManager Instance { get; private set; }
+
     [Export]
     public bool m_IsOnline { get; private set; } = true;
     [Export]
@@ -24,34 +32,19 @@ public partial class GameManager : Node
     private PackedScene m_PlayerScene;
     private Player m_localPlayer;
 
-    private static GameManager _instance;
-
-    public static GameManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                GD.PrintErr("GameManager instance is not initialized.");
-            }
-            return _instance;
-        }
-    }
-
-    // private initializer to prevent external instantiation
-    private GameManager() { }
-
     public override void _Ready()
     {
-        if (_instance != null)
+        if (Instance != null)
         {
+            const int ERROR_CODE = 1; // Exit code for errors > 0
             GD.PrintErr("Multiple instances of GameManager detected!");
-            QueueFree();
-            return;
+            GetTree().Quit(ERROR_CODE);
         }
-        _instance = this;
+        Instance = this;
         GD.Print("GameManager Ready");
 
+        // HACK: this is a temporary fix to load initial level
+        m_Level = GetTree().Root.GetNode<Node3D>("Main/BossLevel");
         // NOTE: Must load resources before calling StartGame()
         m_PlayerScene = ResourceLoader.Load<PackedScene>("res://scenes/prefabs/player.tscn");
 
@@ -155,7 +148,5 @@ public partial class GameManager : Node
 
     public override void _ExitTree()
     {
-        GD.Print("GameManager exiting");
-        // REMOVE ME: NetworkManager.Instance.DisconnectFromServer();
     }
 }
