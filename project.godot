@@ -17,7 +17,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SteamDemo="*res://scripts/SteamDemo.cs"
+SteamManager="*res://scripts/SteamManager.cs"
+Global="*res://scripts/Global.cs"
+
+[debug]
+
+file_logging/enable_file_logging=true
 
 [display]
 
