@@ -14,7 +14,7 @@ public partial class Global : Node
 
     public static float s_GravityFactor { get; private set; } = 1.0f;
     public static float s_TimeFactor = 1.0f;
-    public static RandomNumberGenerator s_RandomNumberGenerator = new RandomNumberGenerator();
+    public static RandomNumberGenerator s_RandomNumberGenerator { get; } = new RandomNumberGenerator();
 
     public override void _Ready()
     {
