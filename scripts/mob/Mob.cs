@@ -181,7 +181,7 @@ public partial class Mob : CharacterBody3D
     public void Die()
     {
         GD.Print(this.m_Name + " has died");
-        GameManager.Instance.DespawnMob(this);
+        //GameManager.DespawnMob(this);
     }
 
     // TODO:

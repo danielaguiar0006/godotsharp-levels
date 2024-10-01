@@ -22,12 +22,13 @@ public partial class SteamManager : Node
         }
         Instance = this;
         GD.Print("SteamManager ready to initialize Steam");
-
-        InitializeSteam();
     }
 
     public override void _Process(double delta)
     {
+        // ONLY RUN STEAM CALLBACKS IF ONLINE
+        if (!GameManager.s_IsOnline) { return; }
+
         Steam.RunCallbacks();
     }
 
@@ -38,15 +39,15 @@ public partial class SteamManager : Node
         Steam.SteamShutdown();
     }
 
-    private void InitializeSteam()
+    public static bool InitializeSteam()
     {
         var initResult = Steam.SteamInit();
         if (initResult.Status != SteamInitStatus.SteamworksActive)
         {
             GD.PrintErr("[ERROR] Failed to initialize Steam, shutting down...: " + initResult.Verbal);
-            GetTree().Quit(((int)initResult.Status));
-            return;
+            return false;
         }
         GD.Print("Steam initialized successfully: " + initResult.Verbal);
+        return true;
     }
 }

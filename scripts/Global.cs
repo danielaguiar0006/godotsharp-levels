@@ -9,11 +9,12 @@ public partial class Global : Node
 {
     public static Global Instance { get; private set; }
 
-    public static float m_Gravity { get; private set; }
-    public static float m_DeltaTime { get; private set; }
+    public static float s_Gravity { get; private set; }
+    public static float s_DeltaTime { get; private set; }
 
-    public static float m_GravityFactor { get; private set; } = 1.0f;
-    public static float m_TimeFactor = 1.0f;
+    public static float s_GravityFactor { get; private set; } = 1.0f;
+    public static float s_TimeFactor = 1.0f;
+    public static RandomNumberGenerator s_RandomNumberGenerator = new RandomNumberGenerator();
 
     public override void _Ready()
     {
@@ -26,19 +27,24 @@ public partial class Global : Node
         Instance = this;
         GD.Print("Global ready");
 
-        m_Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * m_GravityFactor;
+        s_Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * s_GravityFactor;
     }
 
     public override void _Process(double delta)
     {
-        m_DeltaTime = (float)delta * m_TimeFactor;
+        s_DeltaTime = (float)delta * s_TimeFactor;
     }
 
     // This also updates the m_Gravity value
-    public void SetGravityFactor(float gravityFactor)
+    public static void SetGravityFactor(float gravityFactor)
     {
-        m_GravityFactor = gravityFactor;
-        m_Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * m_GravityFactor;
-        GD.Print("Gravity updated to: " + m_Gravity);
+        s_GravityFactor = gravityFactor;
+        s_Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * s_GravityFactor;
+        GD.Print("Gravity updated to: " + s_Gravity);
+    }
+
+    public static void SetRandomSeed(ulong seed)
+    {
+        s_RandomNumberGenerator.Seed = seed;
     }
 }

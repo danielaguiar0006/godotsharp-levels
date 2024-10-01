@@ -49,7 +49,7 @@ public partial class Player : Mob
 
     public override void _Ready()
     {
-        if (GameManager.Instance.m_IsOnline) { m_UdpClient = new UdpClient(); }
+        if (GameManager.s_IsOnline) { m_UdpClient = new UdpClient(); }
 
         // For more accurate mouse input
         Input.UseAccumulatedInput = false;
