@@ -56,6 +56,12 @@ public partial class GameManager : Node
 
     public static void StartSinglePlayerGame()
     {
+        // TODO: Implement way to set RNG seed in the UI
+        // SET RNG SEED HERE
+        // Global.SetRandomSeed(0);
+        // ELSE
+        Global.s_RandomNumberGenerator.Randomize();
+
         s_LevelScene = ResourceLoader.Load<PackedScene>("res://scenes/level.tscn");
         s_Level = s_LevelScene.Instantiate<Level>();
         s_MainNode.AddChild(s_Level);
