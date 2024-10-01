@@ -35,7 +35,6 @@ public partial class SteamManager : Node
     public override void _ExitTree()
     {
         // SHUTDOWN STEAM
-        GD.Print("Shutting down Steam...");
         Steam.SteamShutdown();
     }
 
