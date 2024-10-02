@@ -1,6 +1,7 @@
 // Main menu ui for the game
 
 using Godot;
+using Game.StateMachines;
 
 public partial class MainMenuUI : Control
 {
@@ -36,7 +37,8 @@ public partial class MainMenuUI : Control
     {
         GD.Print("Start Pressed");
         this.Visible = false;
-        GameManager.StartSinglePlayerGame();
+        GameManager.TransitionToState(new SinglePlayerGameState());
+        GameManager.StartGame();
     }
 
     public void _On_Host_Button_Pressed()

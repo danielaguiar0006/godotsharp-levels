@@ -43,10 +43,6 @@ public partial class Player : Mob
         // TODO: set some sort of id to tell between clients/players
     }
 
-    public override void _EnterTree()
-    {
-    }
-
     public override void _Ready()
     {
         if (GameManager.s_IsOnline) { m_UdpClient = new UdpClient(); }
@@ -79,7 +75,6 @@ public partial class Player : Mob
 
     public override void _UnhandledKeyInput(InputEvent @event)
     {
-        // NOTE: newState is null if the state does not change, otherwise it is the new state
         PlayerState newState = m_CurrentPlayerState.HandleKeyboardInput(this, @event);
         TransitionToState(newState);
 
@@ -111,8 +106,8 @@ public partial class Player : Mob
         if (newState != null)
         {
             if (m_CurrentPlayerState != null) { m_CurrentPlayerState.OnExitState(this); } // Exit current state 
-            m_CurrentPlayerState = newState;        // Set the new state
-            PlayerState nextState = m_CurrentPlayerState.OnEnterState(this); // Enter the new state
+            m_CurrentPlayerState = newState;                                              // Set the new state
+            PlayerState nextState = m_CurrentPlayerState.OnEnterState(this);              // Enter the new state
 
             // If the OnEnterState of the new state returns another state, transition again
             if (nextState != null)

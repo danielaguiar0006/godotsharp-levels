@@ -43,7 +43,7 @@ public partial class Global : Node
         GD.Print("Gravity updated to: " + s_Gravity);
     }
 
-    public static void SetRandomSeed(ulong seed)
+    public static void SetRNGSeed(ulong seed)
     {
         s_RandomNumberGenerator.Seed = seed;
     }
