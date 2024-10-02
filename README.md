@@ -6,7 +6,7 @@ NOTE: AS STATED BEFORE, THIS IS THE PROTOTYPE FOR MY FUTURE TO BE RELEASED GAME 
 
 ## Overview
 
-Dungeon Doom Souls combines dungeon crawling and challenging combat available as an open-source project. Developed using the Godot Engine with C#, this game uses Facepunch's open-source Steamworks library to facilitate multiplayer gameplay.
+Dungeon Doom Souls combines dungeon crawling and challenging combat available as an open-source project. Developed using the Godot Engine with C#, this game uses wrapper addons/plugins around the Steamworks library to facilitate multiplayer gameplay.
 
 ## Features
 
@@ -26,7 +26,7 @@ Dungeon Doom Souls combines dungeon crawling and challenging combat available as
 
 | To Do | In Progress | Done |
 | --- | --- | --- |
-|  | Refactor old dungeon-doom-souls code | Add GodotSteam extension + LauraWebdev's C# Bindings into project addons/ folder |
+|  | Refactor old dungeon-doom-souls code |  |
 |  | Get Started with GodotSteam extension |  |
 
 
