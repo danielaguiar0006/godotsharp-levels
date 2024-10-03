@@ -2,7 +2,7 @@ using Godot;
 
 namespace Game.StateMachines
 {
-    public partial class PlayerState : MobState
+    public abstract partial class PlayerState : MobState
     {
         // Called when the state is entered
         public virtual PlayerState OnEnterState(Player player)

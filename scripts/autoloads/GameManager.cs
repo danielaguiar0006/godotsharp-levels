@@ -63,7 +63,6 @@ public partial class GameManager : Node
     {
         if (!s_GameActive) { return; }
 
-        // NOTE: newState is null if the state does not change, otherwise it is the new state
         GameState newState = s_CurrentGameState.HandleKeyboardInput(@event);
         TransitionToState(newState);
     }

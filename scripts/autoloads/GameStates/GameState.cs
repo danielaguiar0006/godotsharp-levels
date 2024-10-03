@@ -5,7 +5,7 @@ namespace Game.StateMachines
     // NOTE: This should basically only contain data/state information like a struct,
     // It will be the child of the Item class which will contain all the functionality
     // and for other systems like an inventory system to enforce the m_IsStackable for example
-    public partial class GameState : Node
+    public abstract partial class GameState : Node
     {
         // Called when the state is entered
         public virtual GameState OnEnterState()
