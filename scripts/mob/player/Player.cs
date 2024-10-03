@@ -1,14 +1,13 @@
 using Godot;
 using Game.ActionTypes;
 using Game.StateMachines;
-using System.Net.Sockets;
 
 public partial class Player : Mob
 {
+    // NOTE: Both moveSpeed and moveSpeedFactor affect the speed of most movement related actions
     [ExportCategory("Movement")]
-    // NOTE: both moveSpeed and moveSpeedFactor affect the speed of most movement related actions
     [Export]
-    public DodgeType m_DodgeType { get; set; } = DodgeType.Dash;
+    public DodgeType m_DodgeType { get; private set; } = DodgeType.Dash;
 
     [ExportCategory("Camera")]
     [Export]
@@ -19,11 +18,10 @@ public partial class Player : Mob
     public Camera3D m_Camera { get; private set; }
     [Export]
     public RayCast3D m_Raycast { get; private set; }
+
+    [ExportCategory("Misc")]
     [Export]
     public PlayerState m_CurrentPlayerState { get; private set; } = null;
-
-#nullable enable
-    public UdpClient? m_UdpClient;
 
     // Aiming/Camera input
     private float m_YawInput = 0.0f;
@@ -31,22 +29,14 @@ public partial class Player : Mob
     private float m_PitchLowerLimit = 0.0f;
     private float m_PitchUpperLimit = 0.0f;
 
-    // Useful values
-    //private Vector3 m_CurrentVelocity = Vector3.Zero;
-    //private float m_CurrentMovementSpeedFactor = 0.0f;
-
     public Player()
     {
         m_Name = "Player";
         SetMobType(MobType.Player);
-
-        // TODO: set some sort of id to tell between clients/players
     }
 
     public override void _Ready()
     {
-        if (GameManager.s_IsOnline) { m_UdpClient = new UdpClient(); }
-
         // For more accurate mouse input
         Input.UseAccumulatedInput = false;
 

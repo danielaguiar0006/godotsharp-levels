@@ -19,14 +19,14 @@ namespace Game.StateMachines
             return null;
         }
 
-        public override GameState Process(float deltaTime)
+        public override GameState Process(double deltaTime)
         {
             // TODO: Implement join game state
             GD.Print("JoinGameState Process");
             return null;
         }
 
-        public override GameState PhysicsProcess(float deltaTime)
+        public override GameState PhysicsProcess(double deltaTime)
         {
             // TODO: Implement join game state
             GD.Print("JoinGameState PhysicsProcess");

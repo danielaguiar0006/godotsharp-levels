@@ -47,12 +47,12 @@ namespace Game.StateMachines
             return null;
         }
 
-        public override GameState Process(float deltaTime)
+        public override GameState Process(double deltaTime)
         {
             return null;
         }
 
-        public override GameState PhysicsProcess(float deltaTime)
+        public override GameState PhysicsProcess(double deltaTime)
         {
             return null;
         }

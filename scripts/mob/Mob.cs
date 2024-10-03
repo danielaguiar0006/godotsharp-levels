@@ -34,7 +34,6 @@ public partial class Mob : CharacterBody3D
     // TODO: Make an inventory class & object which handles storing items, equiping, and unequiping items (Basically an InvenotryManager):
 
     // Get the gravity from the project settings to be synced with RigidBody nodes
-    public float m_Gravity { get; private set; } = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
     public Dictionary<Item.ItemSlot, Item> m_EquipedItems { get; private set; } = new Dictionary<Item.ItemSlot, Item>();
     public MobStats m_MobStats { get; private set; } = new MobStats();
 
@@ -53,7 +52,7 @@ public partial class Mob : CharacterBody3D
     {
         // Add the gravity
         if (!this.IsOnFloor())
-            velocity.Y -= this.m_Gravity * (float)delta;
+            velocity.Y -= Global.s_Gravity * (float)delta;
     }
 
     // This does not apply input movement directly to the mob's velocity, but instead to a target vector

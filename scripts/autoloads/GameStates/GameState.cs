@@ -49,7 +49,7 @@ namespace Game.StateMachines
         // Processing happens at every frame and as fast as possible,
         // so the `delta` time since the previous frame is not constant (`delta` is in seconds).
         // returns the new state if the state changes, otherwise returns null
-        public virtual GameState Process(float deltaTime)
+        public virtual GameState Process(double deltaTime)
         {
             return null;
         }
@@ -58,7 +58,7 @@ namespace Game.StateMachines
         // Physics processing means that the frame rate is synced to the physics,
         // i.e. the `delta` variable should be constant (`delta` is in seconds).
         // returns the new state if the state changes, otherwise returns null
-        public virtual GameState PhysicsProcess(float deltaTime)
+        public virtual GameState PhysicsProcess(double deltaTime)
         {
             return null;
         }

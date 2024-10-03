@@ -10,10 +10,7 @@ public partial class Global : Node
     public static Global Instance { get; private set; }
 
     public static float s_Gravity { get; private set; }
-    public static float s_DeltaTime { get; private set; }
-
     public static float s_GravityFactor { get; private set; } = 1.0f;
-    public static float s_TimeFactor = 1.0f;
     public static RandomNumberGenerator s_RandomNumberGenerator { get; } = new RandomNumberGenerator();
 
     public override void _Ready()
@@ -28,11 +25,6 @@ public partial class Global : Node
         GD.Print("Global ready");
 
         s_Gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle() * s_GravityFactor;
-    }
-
-    public override void _Process(double delta)
-    {
-        s_DeltaTime = (float)delta * s_TimeFactor;
     }
 
     // This also updates the m_Gravity value

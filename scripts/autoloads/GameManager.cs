@@ -21,7 +21,6 @@ public partial class GameManager : Node
     public static PackedScene s_PlayerScene { get; private set; }
     public static PackedScene s_LevelScene { get; private set; }
 
-    private static GameState s_gameStates;
     private static Node s_MainNode;
     private static Control s_MainMenuUI;
     private static Level s_Level;
@@ -74,7 +73,7 @@ public partial class GameManager : Node
         if (!s_GameActive) { return; }
 
         // Process the current game state
-        GameState newState = s_CurrentGameState.Process(Global.s_DeltaTime);
+        GameState newState = s_CurrentGameState.Process(delta);
         TransitionToState(newState);
     }
 
@@ -83,7 +82,7 @@ public partial class GameManager : Node
         if (!s_GameActive) { return; }
 
         // Process the current game state
-        GameState newState = s_CurrentGameState.PhysicsProcess(Global.s_DeltaTime);
+        GameState newState = s_CurrentGameState.PhysicsProcess(delta);
         TransitionToState(newState);
     }
 
