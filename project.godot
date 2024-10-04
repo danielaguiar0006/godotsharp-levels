@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Global="*res://scripts/autoloads/Global.cs"
 SteamManager="*res://scripts/autoloads/SteamManager.cs"
 GameManager="*res://scripts/autoloads/GameManager.cs"
+ImGuiRoot="*res://addons/imgui-godot/data/ImGuiRoot.tscn"
 
 [debug]
 
@@ -33,6 +34,10 @@ window/vsync/vsync_mode=0
 [dotnet]
 
 project/assembly_name="godotsharp-dungeon-doom-souls"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/imgui-godot/plugin.cfg")
 
 [input]
 
