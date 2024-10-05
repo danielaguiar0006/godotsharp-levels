@@ -70,7 +70,19 @@ namespace Game.StatsManager
             { BaseStatType.EquipWeight, 0.0f }
         };
 
-        // Mob Attribute Levels
+        // Mob Max Attribute Levels
+        public Dictionary<AttributeType, int> m_AttributeTypeToMaxLevel { get; private set; } = new Dictionary<AttributeType, int>() {
+            { AttributeType.Vigor, 255 },
+            { AttributeType.Mind, 255 },
+            { AttributeType.Endurance, 255 },
+            { AttributeType.Strength, 255 },
+            { AttributeType.Dexterity, 255 },
+            { AttributeType.Intelligence, 255 },
+            { AttributeType.Faith, 255 },
+            { AttributeType.Charisma, 255 }
+        };
+
+        // Mob Current Attribute Levels
         public Dictionary<AttributeType, int> m_AttributeTypeToCurrentLevel { get; private set; } = new Dictionary<AttributeType, int>() {
             { AttributeType.Vigor, 1 },
             { AttributeType.Mind, 1 },

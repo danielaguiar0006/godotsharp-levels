@@ -9,6 +9,7 @@ public partial class Global : Node
 {
     public static Global Instance { get; private set; }
 
+    public readonly static bool s_IsDebugMode = OS.IsDebugBuild();
     public static float s_Gravity { get; private set; }
     public static float s_GravityFactor { get; private set; } = 1.0f;
     public static RandomNumberGenerator s_RandomNumberGenerator { get; } = new RandomNumberGenerator();

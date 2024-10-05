@@ -79,19 +79,6 @@ public partial class Player : Mob
 
     public override void _UnhandledKeyInput(InputEvent @event)
     {
-        // UNLOCK MOUSE AND SHOW CURSOR
-        // NOTE: The ImGui addon breaks aiming when ui is directly in the middle of the screen
-        // Probably because when the mouse is captured, its probably still in the middle of the
-        // screen, just not visible. Unlocking the mouse and adjusting the ui transform to be
-        // out of the way fixes this issue.
-        if (@event is InputEventKey keyEvent && keyEvent.Pressed)
-        {
-            if (keyEvent.Keycode == Key.Tab)
-            {
-                Input.MouseMode = Input.MouseModeEnum.Visible;
-            }
-        }
-
         PlayerState newState = m_CurrentPlayerState.HandleKeyboardInput(this, @event);
         TransitionToState(newState);
     }
@@ -100,11 +87,6 @@ public partial class Player : Mob
     {
         PlayerState newState = m_CurrentPlayerState.Process(this, delta);
         TransitionToState(newState);
-
-        // TESTING - REMOVE ME:
-        ImGuiNET.ImGui.Begin("MainMenu");
-        ImGuiNET.ImGui.Text("Hello World!");
-        ImGuiNET.ImGui.End();
     }
 
     public override void _PhysicsProcess(double delta)
