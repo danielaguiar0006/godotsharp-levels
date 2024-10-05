@@ -86,7 +86,7 @@ public partial class DebugOverlayUI : Node
                 ImGui.EndTable();
             }
 
-            if (ImGui.CollapsingHeader("Base Stats"))
+            if (ImGui.CollapsingHeader("Base Stats Values"))
             {
                 if (ImGui.BeginTable("BaseStatsTable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
@@ -102,7 +102,7 @@ public partial class DebugOverlayUI : Node
                 }
             }
 
-            if (ImGui.CollapsingHeader("Attribute Stats"))
+            if (ImGui.CollapsingHeader("Attribute Stat Levels"))
             {
                 if (ImGui.BeginTable("AttributeStatsTable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
@@ -118,7 +118,7 @@ public partial class DebugOverlayUI : Node
                 }
             }
 
-            if (ImGui.CollapsingHeader("Special Stats"))
+            if (ImGui.CollapsingHeader("Special Stat Factors"))
             {
                 if (ImGui.BeginTable("SpecialStatsTable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
@@ -134,7 +134,7 @@ public partial class DebugOverlayUI : Node
                 }
             }
 
-            if (ImGui.CollapsingHeader("Damage Resistance"))
+            if (ImGui.CollapsingHeader("Damage Resistance Factors"))
             {
                 if (ImGui.BeginTable("DamageResistanceTable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
                 {
