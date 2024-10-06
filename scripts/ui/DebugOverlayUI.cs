@@ -65,12 +65,14 @@ public partial class DebugOverlayUI : Node
 
         if (ImGui.BeginTable("General", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
         {
+            string name = m_Owner.m_Name;
             ImGui.TableNextRow();
             ImGui.TableSetColumnIndex(0);
             ImGui.Text("Name:");
             ImGui.TableSetColumnIndex(1);
-            ImGui.Text(m_Owner.m_Name);
+            ImGui.InputText("##Name", ref name, 100);
             ImGui.EndTable();
+            m_Owner.m_Name = name;
         }
 
         // PLAYER STATS
@@ -78,12 +80,14 @@ public partial class DebugOverlayUI : Node
         {
             if (ImGui.BeginTable("LevelEffectFactorTable", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
             {
+                float levelEffectFactor = m_Owner.m_MobStats.m_LevelEffectFactor;
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
                 ImGui.Text("Level Effect Factor:");
                 ImGui.TableSetColumnIndex(1);
-                ImGui.Text($"{m_Owner.m_MobStats.m_LevelEffectFactor}");
+                ImGui.InputFloat("##LevelEffectFactor", ref levelEffectFactor);
                 ImGui.EndTable();
+                m_Owner.m_MobStats.m_LevelEffectFactor = levelEffectFactor;
             }
 
             if (ImGui.CollapsingHeader("Base Stats Values"))
@@ -96,7 +100,9 @@ public partial class DebugOverlayUI : Node
                         ImGui.TableSetColumnIndex(0);
                         ImGui.Text($"{stat.Key}:");
                         ImGui.TableSetColumnIndex(1);
-                        ImGui.Text($"{stat.Value} / {m_Owner.m_MobStats.m_BaseStatTypeToMaxValue[stat.Key]}");
+                        float currentValue = stat.Value;
+                        ImGui.InputFloat($"##{stat.Key}", ref currentValue);
+                        m_Owner.m_MobStats.m_BaseStatTypeToCurrentValue[stat.Key] = currentValue;
                     }
                     ImGui.EndTable();
                 }
@@ -112,7 +118,9 @@ public partial class DebugOverlayUI : Node
                         ImGui.TableSetColumnIndex(0);
                         ImGui.Text($"{stat.Key}:");
                         ImGui.TableSetColumnIndex(1);
-                        ImGui.Text($"{stat.Value} / {m_Owner.m_MobStats.m_AttributeTypeToMaxLevel[stat.Key]}");
+                        int currentLevel = stat.Value;
+                        ImGui.InputInt($"##{stat.Key}", ref currentLevel);
+                        m_Owner.m_MobStats.m_AttributeTypeToCurrentLevel[stat.Key] = currentLevel;
                     }
                     ImGui.EndTable();
                 }
@@ -128,7 +136,9 @@ public partial class DebugOverlayUI : Node
                         ImGui.TableSetColumnIndex(0);
                         ImGui.Text($"{stat.Key}:");
                         ImGui.TableSetColumnIndex(1);
-                        ImGui.Text(stat.Value.ToString());
+                        float amountFactor = stat.Value;
+                        ImGui.InputFloat($"##{stat.Key}", ref amountFactor);
+                        m_Owner.m_MobStats.m_SpecialStatTypeToAmountFactor[stat.Key] = amountFactor;
                     }
                     ImGui.EndTable();
                 }
@@ -144,7 +154,9 @@ public partial class DebugOverlayUI : Node
                         ImGui.TableSetColumnIndex(0);
                         ImGui.Text($"{stat.Key}:");
                         ImGui.TableSetColumnIndex(1);
-                        ImGui.Text(stat.Value.ToString());
+                        float resistanceFactor = stat.Value;
+                        ImGui.InputFloat($"##{stat.Key}", ref resistanceFactor);
+                        m_Owner.m_MobStats.m_DamageTypeToResistanceAmountFactor[stat.Key] = resistanceFactor;
                     }
                     ImGui.EndTable();
                 }

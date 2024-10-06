@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.DamageSystem;
 
+// TODO: update interaction between level and stats
 namespace Game.StatsManager
 {
     public enum BaseStatType
@@ -53,7 +54,7 @@ namespace Game.StatsManager
     public class MobStats
     {
         // Every level, adds 10% effectiveness if applicable
-        public float m_LevelEffectFactor { get; private set; } = 1.1f;
+        public float m_LevelEffectFactor { get; set; } = 1.1f;
 
         // Max Base Stat Amounts
         public Dictionary<BaseStatType, float> m_BaseStatTypeToMaxValue { get; private set; } = new Dictionary<BaseStatType, float>() {
