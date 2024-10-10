@@ -65,14 +65,23 @@ public partial class DebugOverlayUI : Node
 
         if (ImGui.BeginTable("General", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
         {
+            // PLAYER NAME
             string name = m_Owner.m_Name;
             ImGui.TableNextRow();
             ImGui.TableSetColumnIndex(0);
             ImGui.Text("Name:");
             ImGui.TableSetColumnIndex(1);
             ImGui.InputText("##Name", ref name, 100);
-            ImGui.EndTable();
             m_Owner.m_Name = name;
+
+            // PLAYER STATE
+            ImGui.TableNextRow();
+            ImGui.TableSetColumnIndex(0);
+            ImGui.Text("State:");
+            ImGui.TableSetColumnIndex(1);
+            ImGui.Text(m_Owner.m_StateMachine.m_CurrentState.GetType().Name);
+
+            ImGui.EndTable();
         }
 
         // PLAYER STATS

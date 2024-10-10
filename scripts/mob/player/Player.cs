@@ -19,9 +19,7 @@ public partial class Player : Mob
     [Export]
     public RayCast3D m_Raycast { get; private set; }
 
-    [ExportCategory("Misc")]
-    [Export]
-    public PlayerState m_CurrentPlayerState { get; private set; } = null;
+    public StateMachine<Player> m_StateMachine { get; private set; }
 
     // Aiming/Camera input
     private float m_YawInput = 0.0f;
@@ -33,6 +31,7 @@ public partial class Player : Mob
     {
         m_Name = "Player";
         SetMobType(MobType.Player);
+        m_StateMachine = new StateMachine<Player>(this);
     }
 
     public override void _Ready()
@@ -51,7 +50,7 @@ public partial class Player : Mob
         m_Camera.Current = true;
 
         // Set the players initial state here
-        TransitionToState(new IdleState());
+        m_StateMachine.ChangeState(new IdleState());
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -72,21 +71,17 @@ public partial class Player : Mob
             }
         }
 
-        // NOTE: newState is null if the state does not change, otherwise it is the new state
-        PlayerState newState = m_CurrentPlayerState.HandleInput(this, @event);
-        TransitionToState(newState);
+        m_StateMachine.HandleInput(@event);
     }
 
     public override void _UnhandledKeyInput(InputEvent @event)
     {
-        PlayerState newState = m_CurrentPlayerState.HandleKeyboardInput(this, @event);
-        TransitionToState(newState);
+        m_StateMachine.HandleKeyboardInput(@event);
     }
 
     public override void _Process(double delta)
     {
-        PlayerState newState = m_CurrentPlayerState.Process(this, delta);
-        TransitionToState(newState);
+        m_StateMachine.Process(delta);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -95,29 +90,11 @@ public partial class Player : Mob
         // performance and work with the new velocity variable instead
         Vector3 velocity = this.Velocity;
 
-        PlayerState newState = m_CurrentPlayerState.PhysicsProcess(this, ref velocity, delta);
-        TransitionToState(newState);
+        m_StateMachine.PhysicsProcess(delta, ref velocity);
 
         // Apply gravity and movement
         ApplyGravityToVector(ref velocity, delta);
         ApplyMobMovement(ref velocity);
-    }
-
-    // Change the player's state
-    public void TransitionToState(PlayerState newState)
-    {
-        if (newState != null)
-        {
-            if (m_CurrentPlayerState != null) { m_CurrentPlayerState.OnExitState(this); } // Exit current state 
-            m_CurrentPlayerState = newState;                                              // Set the new state
-            PlayerState nextState = m_CurrentPlayerState.OnEnterState(this);              // Enter the new state
-
-            // If the OnEnterState of the new state returns another state, transition again
-            if (nextState != null)
-            {
-                TransitionToState(nextState);
-            }
-        }
     }
 
     // Helper funciton to aim the camera through mouse/controller input

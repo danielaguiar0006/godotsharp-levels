@@ -4,14 +4,14 @@ using Game.StatsManager;
 using Game.StateMachines;
 
 
-public partial class FallState : PlayerState
+public partial class FallState : State<Player>
 {
-    public override PlayerState OnEnterState(Player player)
+    public override State<Player>? OnEnterState(Player player)
     {
         return null;
     }
 
-    public override PlayerState HandleInput(Player player, InputEvent @event)
+    public override State<Player>? HandleInput(Player player, InputEvent @event)
     {
         // Checking mouse button events
         if (@event is InputEventMouseButton mouseButtonEvent && Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -31,17 +31,17 @@ public partial class FallState : PlayerState
         return null;
     }
 
-    public override PlayerState HandleKeyboardInput(Player player, InputEvent @event)
+    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
     {
         return null;
     }
 
-    public override PlayerState Process(Player player, double delta)
+    public override State<Player>? Process(Player player, double delta)
     {
         return null;
     }
 
-    public override PlayerState PhysicsProcess(Player player, ref Vector3 velocity, double delta)
+    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
     {
         float fallSpeedMovementFactor = Input.IsActionPressed(s_MoveSprint) ? player.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.SprintSpeedFactor] : 1.0f;
         player.ApplyMovementInputToVector(ref velocity, fallSpeedMovementFactor);

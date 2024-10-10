@@ -3,9 +3,9 @@ using static InputActions;
 using Game.StateMachines;
 
 
-public partial class MoveState : PlayerState
+public partial class MoveState : State<Player>
 {
-    public override PlayerState OnEnterState(Player player)
+    public override State<Player>? OnEnterState(Player player)
     {
         // HACK: Perform an immediate physics update to avoid delay in state transition
         // This help alleviate an issue of the player moving at half speed when constantly
@@ -19,7 +19,7 @@ public partial class MoveState : PlayerState
         return null;
     }
 
-    public override PlayerState HandleInput(Player player, InputEvent @event)
+    public override State<Player>? HandleInput(Player player, InputEvent @event)
     {
         // Checking mouse button events
         if (@event is InputEventMouseButton mouseButtonEvent && Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -43,18 +43,18 @@ public partial class MoveState : PlayerState
         return null;
     }
 
-    public override PlayerState HandleKeyboardInput(Player player, InputEvent @event)
+    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
     {
         return null;
     }
 
-    public override PlayerState Process(Player player, double delta)
+    public override State<Player>? Process(Player player, double delta)
     {
 
         return null;
     }
 
-    public override PlayerState PhysicsProcess(Player player, ref Vector3 velocity, double delta)
+    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
     {
         player.ApplyMovementInputToVector(ref velocity);
 

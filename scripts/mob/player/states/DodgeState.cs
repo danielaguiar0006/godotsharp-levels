@@ -5,7 +5,7 @@ using Game.StatsManager;
 using Game.StateMachines;
 
 
-public partial class DodgeState : PlayerState
+public partial class DodgeState : State<Player>
 {
     // How long the dodge will last, animations and all
     private float currentDodgeTimeSec;
@@ -19,7 +19,7 @@ public partial class DodgeState : PlayerState
     private Transform3D targetCameraTransform;
 
 
-    public override PlayerState OnEnterState(Player player)
+    public override State<Player>? OnEnterState(Player player)
     {
         switch (player.m_DodgeType)
         {
@@ -52,17 +52,17 @@ public partial class DodgeState : PlayerState
         return null;
     }
 
-    public override PlayerState HandleInput(Player player, InputEvent @event)
+    public override State<Player>? HandleInput(Player player, InputEvent @event)
     {
         return null;
     }
 
-    public override PlayerState HandleKeyboardInput(Player player, InputEvent @event)
+    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
     {
         return null;
     }
 
-    public override PlayerState Process(Player player, double delta)
+    public override State<Player>? Process(Player player, double delta)
     {
         currentDodgeTimeSec -= (float)delta;
 
@@ -70,7 +70,7 @@ public partial class DodgeState : PlayerState
     }
 
     // Dodge the player - Affected by player's dodge type, speed factor, regular movement speed, dodge time, and movement direction
-    public override PlayerState PhysicsProcess(Player player, ref Vector3 velocity, double delta)
+    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
     {
         if (currentDodgeTimeSec < 0.0f)
         {

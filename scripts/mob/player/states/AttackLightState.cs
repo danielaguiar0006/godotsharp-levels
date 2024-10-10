@@ -4,7 +4,7 @@ using Game.StateMachines;
 
 
 // TODO: Finish implementing first version of
-public partial class AttackLightState : PlayerState
+public partial class AttackLightState : State<Player>
 {
     // TODO: Read from the players equipped weapon to determine the attack time, damage, 
     // animation, etc... and have a seperate state for each specific weapon.  
@@ -12,7 +12,7 @@ public partial class AttackLightState : PlayerState
     // How long the attack will last, animations and all
     //private float attackLightTimeSec;
 
-    public override PlayerState OnEnterState(Player player)
+    public override State<Player>? OnEnterState(Player player)
     {
         // do things
         // do more things
@@ -23,17 +23,17 @@ public partial class AttackLightState : PlayerState
         return null;
     }
 
-    public override PlayerState HandleInput(Player player, InputEvent @event)
+    public override State<Player>? HandleInput(Player player, InputEvent @event)
     {
         return null;
     }
 
-    public override PlayerState HandleKeyboardInput(Player player, InputEvent @event)
+    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
     {
         return null;
     }
 
-    public override PlayerState PhysicsProcess(Player player, ref Vector3 velocity, double delta)
+    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
     {
         return null;
     }

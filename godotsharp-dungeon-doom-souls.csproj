@@ -13,5 +13,6 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>godotsharpdungeondoomsouls</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 </Project>
