@@ -32,7 +32,6 @@ public partial class DodgeState : PlayerState
                     return new MoveState();
                 }
 
-                GD.Print("Rolling!!!");
                 currentDodgeTimeSec = 0.5f;
                 totalDodgeTimeSec = currentDodgeTimeSec;
                 rollSpeedFactor *= player.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.DodgeSpeedFactor];
@@ -40,7 +39,6 @@ public partial class DodgeState : PlayerState
                 // Play the roll animation
                 break;
             case DodgeType.Dash:
-                GD.Print("Dashing!!!");
                 currentDodgeTimeSec = 0.33f;
                 totalDodgeTimeSec = currentDodgeTimeSec;
                 dashSpeedFactor *= player.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.DodgeSpeedFactor];

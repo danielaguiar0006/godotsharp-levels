@@ -13,7 +13,6 @@ public partial class JumpState : PlayerState
 
     public override PlayerState OnEnterState(Player player)
     {
-        GD.Print("Jumping!!!");
         appliedJumpVelocityTimeSec = 0.1f;
         jumpVelocity = player.m_JumpVelocity;
         isJumping = true;

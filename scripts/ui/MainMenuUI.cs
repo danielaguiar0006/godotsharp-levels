@@ -2,6 +2,7 @@
 
 using Godot;
 using Game.StateMachines;
+using Game.Networking;
 
 public partial class MainMenuUI : Control
 {
@@ -45,6 +46,7 @@ public partial class MainMenuUI : Control
     {
         GD.Print("Host Pressed");
         // TODO: Open Host Menu
+        SteamManager.s_SteamLobbyManager.CreateLobby();
     }
 
     public void _On_Join_Button_Pressed()

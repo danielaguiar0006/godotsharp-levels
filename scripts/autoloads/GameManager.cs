@@ -8,10 +8,12 @@
 using Godot;
 using System.Collections.Generic;
 using Game.StateMachines;
+using Game.Networking;
 
 public partial class GameManager : Node
 {
     public static GameManager Instance { get; private set; }
+    public static bool s_ForceOffline { get; private set; } = false; // TODO: REMOVE FOR RELEASE
 
     public static GameState s_CurrentGameState { get; private set; } = null;
     public static bool s_GameActive { get; private set; } = false;
@@ -34,13 +36,13 @@ public partial class GameManager : Node
             GetTree().Quit(ERROR_CODE);
         }
         Instance = this;
-        GD.Print("GameManager Ready");
+        GD.Print("GameManager ready");
 
         // GET MAIN NODE
         s_MainNode = GetTree().CurrentScene;
 
         // TRY TO INITIALIZE STEAM
-        s_IsOnline = SteamManager.InitializeSteam();
+        if (!s_ForceOffline) { s_IsOnline = SteamManager.InitializeSteam(); }
 
         // LOAD MAIN MENU UI
         PackedScene mainMenuUIScene = ResourceLoader.Load<PackedScene>("res://scenes/main_menu_ui.tscn");
