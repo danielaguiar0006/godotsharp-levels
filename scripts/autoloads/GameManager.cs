@@ -15,7 +15,7 @@ public partial class GameManager : Node
     public static GameManager Instance { get; private set; }
     public static bool s_ForceOffline { get; private set; } = false; // TODO: REMOVE FOR RELEASE
 
-    public static GameState s_CurrentGameState { get; private set; } = null;
+    public static StateMachine<GameManager> s_StateMachine { get; private set; }
     public static bool s_GameActive { get; private set; } = false;
     public static bool s_IsOnline { get; private set; } = false;
     public static ushort s_depthLevel { get; private set; } = 0;
@@ -38,6 +38,9 @@ public partial class GameManager : Node
         Instance = this;
         GD.Print("GameManager ready");
 
+        // INIT STATE MACHINE
+        s_StateMachine = new StateMachine<GameManager>(this);
+
         // GET MAIN NODE
         s_MainNode = GetTree().CurrentScene;
 
@@ -56,43 +59,35 @@ public partial class GameManager : Node
     {
         if (!s_GameActive) { return; }
 
-        // NOTE: newState is null if the state does not change, otherwise it is the new state
-        GameState newState = s_CurrentGameState.HandleInput(@event);
-        TransitionToState(newState);
+        s_StateMachine.HandleInput(@event);
     }
 
     public override void _UnhandledKeyInput(InputEvent @event)
     {
         if (!s_GameActive) { return; }
 
-        GameState newState = s_CurrentGameState.HandleKeyboardInput(@event);
-        TransitionToState(newState);
+        s_StateMachine.HandleKeyboardInput(@event);
     }
 
     public override void _Process(double delta)
     {
         if (!s_GameActive) { return; }
 
-        // Process the current game state
-        GameState newState = s_CurrentGameState.Process(delta);
-        TransitionToState(newState);
+        s_StateMachine.Process(delta);
     }
 
     public override void _PhysicsProcess(double delta)
     {
         if (!s_GameActive) { return; }
 
-        // Process the current game state
-        GameState newState = s_CurrentGameState.PhysicsProcess(delta);
-        TransitionToState(newState);
+        s_StateMachine.PhysicsProcess(delta);
     }
 
     public static void StartGame()
     {
         GD.Print("Starting Game");
 
-        GameState newState = s_CurrentGameState.StartGame();
-        TransitionToState(newState);
+        s_StateMachine.m_CurrentState.StartGame(s_StateMachine.m_Owner);
         s_GameActive = true;
     }
 
@@ -142,23 +137,6 @@ public partial class GameManager : Node
         }
         s_MainNode.RemoveChild(s_Level);
         s_Level.QueueFree();
-    }
-
-    // Change the game's state
-    public static void TransitionToState(GameState newState)
-    {
-        if (newState != null)
-        {
-            if (s_CurrentGameState != null) { s_CurrentGameState.OnExitState(); } // Exit current state 
-            s_CurrentGameState = newState;                                        // Set the new state
-            GameState nextState = s_CurrentGameState.OnEnterState();              // Enter the new state
-
-            // If the OnEnterState of the new state returns another state, transition again
-            if (nextState != null)
-            {
-                TransitionToState(nextState);
-            }
-        }
     }
 
     public static void SetPlayerScene(PackedScene playerScene) { s_PlayerScene = playerScene; }

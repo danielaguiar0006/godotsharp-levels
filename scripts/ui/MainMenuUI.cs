@@ -38,7 +38,7 @@ public partial class MainMenuUI : Control
     {
         GD.Print("Start Pressed");
         this.Visible = false;
-        GameManager.TransitionToState(new SinglePlayerGameState());
+        GameManager.s_StateMachine.ChangeState(new SinglePlayerGameState());
         GameManager.StartGame();
     }
 

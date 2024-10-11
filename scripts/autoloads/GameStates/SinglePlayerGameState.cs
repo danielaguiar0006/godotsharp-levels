@@ -2,12 +2,12 @@ using Godot;
 
 namespace Game.StateMachines
 {
-    public partial class SinglePlayerGameState : GameState
+    public partial class SinglePlayerGameState : State<GameManager>
     {
         Player m_MainPlayer;
         Level m_Level;
 
-        public override GameState OnEnterState()
+        public override State<GameManager>? OnEnterState(GameManager gameManager)
         {
             // INIT SINGLE PLAYER GAME
 
@@ -24,7 +24,7 @@ namespace Game.StateMachines
             return null;
         }
 
-        public override GameState StartGame()
+        public override void StartGame(GameManager gameManager)
         {
             // SPAWN PLAYER AND LEVEL
             // NOTE: Must first spawn the player, then the level after
@@ -33,31 +33,29 @@ namespace Game.StateMachines
 
             // GENERATE LEVEL
             m_Level.GenerateLevel();
-
-            return null;
         }
 
-        public override GameState HandleInput(InputEvent @event)
+        public override State<GameManager>? HandleInput(GameManager gameManager, InputEvent @event)
         {
             return null;
         }
 
-        public override GameState HandleKeyboardInput(InputEvent @event)
+        public override State<GameManager>? HandleKeyboardInput(GameManager gameManager, InputEvent @event)
         {
             return null;
         }
 
-        public override GameState Process(double deltaTime)
+        public override State<GameManager>? Process(GameManager gameManager, double deltaTime)
         {
             return null;
         }
 
-        public override GameState PhysicsProcess(double deltaTime)
+        public override State<GameManager>? PhysicsProcess(GameManager gameManager, double deltaTime)
         {
             return null;
         }
 
-        public override void OnExitState()
+        public override void OnExitState(GameManager gameManager)
         {
             return;
         }

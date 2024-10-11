@@ -2,38 +2,38 @@ using Godot;
 
 namespace Game.StateMachines
 {
-    public partial class JoinGameState : GameState
+    public partial class JoinGameState : State<GameManager>
     {
-        public override GameState OnEnterState()
+        public override State<GameManager>? OnEnterState(GameManager gameManager)
         {
             return null;
         }
 
-        public override GameState HandleInput(InputEvent @event)
+        public override State<GameManager>? HandleInput(GameManager gameManager, InputEvent @event)
         {
             return null;
         }
 
-        public override GameState HandleKeyboardInput(InputEvent @event)
+        public override State<GameManager>? HandleKeyboardInput(GameManager gameManager, InputEvent @event)
         {
             return null;
         }
 
-        public override GameState Process(double deltaTime)
+        public override State<GameManager>? Process(GameManager gameManager, double deltaTime)
         {
             // TODO: Implement join game state
             GD.Print("JoinGameState Process");
             return null;
         }
 
-        public override GameState PhysicsProcess(double deltaTime)
+        public override State<GameManager>? PhysicsProcess(GameManager gameManager, double deltaTime)
         {
             // TODO: Implement join game state
             GD.Print("JoinGameState PhysicsProcess");
             return null;
         }
 
-        public override void OnExitState()
+        public override void OnExitState(GameManager gameManager)
         {
             // TODO: Implement join game state
             GD.Print("JoinGameState OnExitState");
