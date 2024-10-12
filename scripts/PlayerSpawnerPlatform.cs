@@ -9,7 +9,7 @@ public partial class PlayerSpawnerPlatform : Node3D
         m_Spawner.m_IsActive = false;
         m_Spawner.m_IsOneShot = true;
         m_Spawner.m_MaxSpawnCount = 1;
-        m_Spawner.m_SpawnRatePerSecond = 100.0f; // Almost instant
+        m_Spawner.m_SpawnRatePerSecond = 0.0f; // <= 0 Is instant
         m_Spawner.m_RelativeSpawnPosition = new Vector3(0, 0, 0);
         m_Spawner.m_RelativeSpawnPositionOffset = new Vector3(0, 0.005f, 0);
 

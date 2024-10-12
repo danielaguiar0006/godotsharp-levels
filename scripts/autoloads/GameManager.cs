@@ -123,7 +123,6 @@ public partial class GameManager : Node
         }
     }
 
-    // Default to usign this one as it's more efficient... I think?
     public static T? Spawn<T>(PackedScene targetScene, Vector3 globalSpawnPosition = default(Vector3)) where T : Node3D
     {
         if (targetScene == null)
@@ -142,6 +141,35 @@ public partial class GameManager : Node
             {
                 GD.Print("Spawned object is a Player, adding to GameManager player list.");
                 s_Players.Add(player);
+
+                switch (s_Players.Count)
+                {
+                    case 1:
+                        GD.Print("Spawned Player 1");
+                        // FIXME: Why is there two names?
+                        player.Name = "PlayerOne";
+                        player.m_Name = "PlayerOne";
+                        break;
+                    case 2:
+                        GD.Print("Spawned Player 2");
+                        player.Name = "PlayerTwo";
+                        player.m_Name = "PlayerTwo";
+                        break;
+                    case 3:
+                        GD.Print("Spawned Player 3");
+                        player.Name = "PlayerThree";
+                        player.m_Name = "PlayerThree";
+                        break;
+                    case 4:
+                        GD.Print("Spawned Player 4");
+                        player.Name = "PlayerFour";
+                        player.m_Name = "PlayerFour";
+                        break;
+                    default:
+                        GD.Print("Spawned Player " + s_Players.Count);
+                        // FIXME: DESPAWN PLAYER AS THE MAX IS 4
+                        break;
+                }
             }
 
             // SET SPAWN POSITION/TRANSFORM

@@ -5,7 +5,6 @@ namespace Game.StateMachines
 {
     public partial class SinglePlayerGameState : State<GameManager>
     {
-        Player m_MainPlayer;
         Level m_Level;
 
         public override State<GameManager>? OnEnterState(GameManager gameManager)
@@ -55,6 +54,7 @@ namespace Game.StateMachines
 
         public override State<GameManager>? PhysicsProcess(GameManager gameManager, double deltaTime)
         {
+            //Debug.Assert(GameManager.s_Players[0] != null, "Error: No Player One Instance");
             return null;
         }
 

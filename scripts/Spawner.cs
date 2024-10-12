@@ -7,7 +7,7 @@ public partial class Spawner<T> : Node3D where T : Node3D
     public bool m_IsActive = false;
     public bool m_IsOneShot = false;
     public uint m_MaxSpawnCount = 1;
-    public float m_SpawnRatePerSecond = 1.0f;
+    public float m_SpawnRatePerSecond = 1.0f; // 0.0f <= Instant
     public Vector3 m_RelativeSpawnPosition;
     public Vector3 m_RelativeSpawnPositionOffset;
 
@@ -49,7 +49,13 @@ public partial class Spawner<T> : Node3D where T : Node3D
         // UPDATE TIMER
         m_TimeSinceLastSpawn += (float)delta;
 
-        if (m_TimeSinceLastSpawn >= 1.0f / m_SpawnRatePerSecond && m_SpawnedObjects.Count < m_MaxSpawnCount)
+        // INSTANT SPAWN
+        if (m_SpawnRatePerSecond <= 0.0f && m_SpawnedObjects.Count < m_MaxSpawnCount)
+        {
+            Spawn(m_RelativeSpawnPosition);
+        }
+        // TIMED SPAWN
+        else if (m_TimeSinceLastSpawn >= 1.0f / m_SpawnRatePerSecond && m_SpawnedObjects.Count < m_MaxSpawnCount)
         {
             Spawn(m_RelativeSpawnPosition);
         }
@@ -85,6 +91,7 @@ public partial class Spawner<T> : Node3D where T : Node3D
         return spawnedObject;
     }
 
+    // TODO:
     // public void Despawn(T spawnedObject)
     // {
     //     if (m_SpawnedObjects.Contains(spawnedObject))
