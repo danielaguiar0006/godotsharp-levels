@@ -1,4 +1,5 @@
 using Godot;
+using System.Diagnostics;
 
 namespace Game.StateMachines
 {
@@ -28,11 +29,13 @@ namespace Game.StateMachines
         {
             // SPAWN PLAYER AND LEVEL
             // NOTE: Must first spawn the player, then the level after
-            m_MainPlayer = GameManager.SpawnPlayer();
-            m_Level = GameManager.SpawnLevel();
+            //m_MainPlayer = GameManager.SpawnPlayer();
+            //m_MainPlayer = GameManager.Spawn<Player>(GameManager.s_PlayerScene)!;
+            //Debug.Assert(m_MainPlayer != null, "Failed to spawn Main player");
+            //m_Level = GameManager.SpawnLevel();
 
             // GENERATE LEVEL
-            m_Level.GenerateLevel();
+            //m_Level.GenerateLevel();
         }
 
         public override State<GameManager>? HandleInput(GameManager gameManager, InputEvent @event)

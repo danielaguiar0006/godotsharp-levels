@@ -7,6 +7,7 @@
 
 using Godot;
 using System.Collections.Generic;
+using System;
 using Game.StateMachines;
 using Game.Networking;
 
@@ -16,12 +17,12 @@ public partial class GameManager : Node
     public static bool s_ForceOffline { get; private set; } = false; // TODO: REMOVE FOR RELEASE
 
     public static StateMachine<GameManager> s_StateMachine { get; private set; }
-    public static bool s_GameActive { get; private set; } = false;
+    public static bool s_IsGameActive { get; private set; } = false;
     public static bool s_IsOnline { get; private set; } = false;
     public static ushort s_depthLevel { get; private set; } = 0;
-    public static List<Player> s_Players { get; private set; } = new List<Player>();
-    public static PackedScene s_PlayerScene { get; private set; }
+    public static PackedScene s_PlayerScene { get; private set; } = null!; // Initialized in _Ready()
     public static PackedScene s_LevelScene { get; private set; }
+    public static List<Player> s_Players { get; private set; } = new List<Player>(4);
 
     private static Node s_MainNode;
     private static Control s_MainMenuUI;
@@ -47,6 +48,9 @@ public partial class GameManager : Node
         // TRY TO INITIALIZE STEAM
         if (!s_ForceOffline) { s_IsOnline = SteamManager.InitializeSteam(); }
 
+        // LOAD PLAYER SCENE
+        s_PlayerScene = ResourceLoader.Load<PackedScene>("res://scenes/prefabs/player.tscn");
+
         // LOAD MAIN MENU UI
         PackedScene mainMenuUIScene = ResourceLoader.Load<PackedScene>("res://scenes/main_menu_ui.tscn");
         s_MainMenuUI = mainMenuUIScene.Instantiate<Control>();
@@ -57,28 +61,28 @@ public partial class GameManager : Node
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (!s_GameActive) { return; }
+        if (!s_IsGameActive) { return; }
 
         s_StateMachine.HandleInput(@event);
     }
 
     public override void _UnhandledKeyInput(InputEvent @event)
     {
-        if (!s_GameActive) { return; }
+        if (!s_IsGameActive) { return; }
 
         s_StateMachine.HandleKeyboardInput(@event);
     }
 
     public override void _Process(double delta)
     {
-        if (!s_GameActive) { return; }
+        if (!s_IsGameActive) { return; }
 
         s_StateMachine.Process(delta);
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        if (!s_GameActive) { return; }
+        if (!s_IsGameActive) { return; }
 
         s_StateMachine.PhysicsProcess(delta);
     }
@@ -88,7 +92,7 @@ public partial class GameManager : Node
         GD.Print("Starting Game");
 
         s_StateMachine.m_CurrentState.StartGame(s_StateMachine.m_Owner);
-        s_GameActive = true;
+        s_IsGameActive = true;
     }
 
     public static void QuitApplication()
@@ -96,12 +100,64 @@ public partial class GameManager : Node
         s_MainNode.GetTree().Quit();
     }
 
-    public static Player SpawnPlayer()
+    // public static Player SpawnPlayer()
+    // {
+    //     Player player = s_PlayerScene.Instantiate<Player>();
+    //     s_Players.Add(player);
+    //     s_MainNode.AddChild(player);
+    //     return player;
+    // }
+
+    public static T? Spawn<T>(string targetScenePath, Vector3 globalSpawnPosition = default(Vector3)) where T : Node3D
     {
-        Player player = s_PlayerScene.Instantiate<Player>();
-        s_Players.Add(player);
-        s_MainNode.AddChild(player);
-        return player;
+        try
+        {
+            PackedScene objectScene = ResourceLoader.Load<PackedScene>(targetScenePath);
+            return Spawn<T>(objectScene, globalSpawnPosition);
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr("Failed to spawn object, failed to load scene: " + targetScenePath);
+            GD.PrintErr(ex.Message);
+            return default(T);
+        }
+    }
+
+    // Default to usign this one as it's more efficient... I think?
+    public static T? Spawn<T>(PackedScene targetScene, Vector3 globalSpawnPosition = default(Vector3)) where T : Node3D
+    {
+        if (targetScene == null)
+        {
+            GD.PrintErr("Failed to spawn object: Target object scene is null");
+            return default(T);
+        }
+
+        try
+        {
+            // SPAWN OBJECT
+            T spawnedObject = targetScene.Instantiate<T>();
+
+            // ADD TO LIST IF APPLICABLE
+            if (spawnedObject is Player player)
+            {
+                GD.Print("Spawned object is a Player, adding to GameManager player list.");
+                s_Players.Add(player);
+            }
+
+            // SET SPAWN POSITION/TRANSFORM
+            spawnedObject.GlobalTransform = new Transform3D(Basis.Identity, globalSpawnPosition);
+
+            // ADD TO SCENE
+            s_MainNode.AddChild(spawnedObject);
+
+            return spawnedObject;
+        }
+        catch (Exception ex)
+        {
+            GD.PrintErr("Failed to spawn object: Failed to instance target object scene");
+            GD.PrintErr(ex.Message);
+            return default(T);
+        }
     }
 
     public static void DespawnPlayer(Player player)
