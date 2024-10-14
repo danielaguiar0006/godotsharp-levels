@@ -17,6 +17,8 @@ public partial class GameManager : Node
     public static bool s_ForceOffline { get; private set; } = false; // TODO: REMOVE FOR RELEASE
 
     public static StateMachine<GameManager> s_StateMachine { get; private set; }
+    [Signal]
+    public delegate void GameActiveEventHandler();
     public static bool s_IsGameActive { get; private set; } = false;
     public static bool s_IsOnline { get; private set; } = false;
     public static ushort s_depthLevel { get; private set; } = 0;
@@ -87,12 +89,12 @@ public partial class GameManager : Node
         s_StateMachine.PhysicsProcess(delta);
     }
 
-    public static void StartGame()
+    public void StartGame()
     {
         GD.Print("Starting Game");
 
+        SetGameActive(true);
         s_StateMachine.m_CurrentState.StartGame(s_StateMachine.m_Owner);
-        s_IsGameActive = true;
     }
 
     public static void QuitApplication()
@@ -127,7 +129,7 @@ public partial class GameManager : Node
     {
         if (targetScene == null)
         {
-            GD.PrintErr("Failed to spawn object: Target object scene is null");
+            GD.PrintErr("Failed to spawn object: Target object packed scene is null");
             return default(T);
         }
 
@@ -137,40 +139,7 @@ public partial class GameManager : Node
             T spawnedObject = targetScene.Instantiate<T>();
 
             // ADD TO LIST IF APPLICABLE
-            if (spawnedObject is Player player)
-            {
-                GD.Print("Spawned object is a Player, adding to GameManager player list.");
-                s_Players.Add(player);
-
-                switch (s_Players.Count)
-                {
-                    case 1:
-                        GD.Print("Spawned Player 1");
-                        // FIXME: Why is there two names?
-                        player.Name = "PlayerOne";
-                        player.m_Name = "PlayerOne";
-                        break;
-                    case 2:
-                        GD.Print("Spawned Player 2");
-                        player.Name = "PlayerTwo";
-                        player.m_Name = "PlayerTwo";
-                        break;
-                    case 3:
-                        GD.Print("Spawned Player 3");
-                        player.Name = "PlayerThree";
-                        player.m_Name = "PlayerThree";
-                        break;
-                    case 4:
-                        GD.Print("Spawned Player 4");
-                        player.Name = "PlayerFour";
-                        player.m_Name = "PlayerFour";
-                        break;
-                    default:
-                        GD.Print("Spawned Player " + s_Players.Count);
-                        // FIXME: DESPAWN PLAYER AS THE MAX IS 4
-                        break;
-                }
-            }
+            CheckIfPlayer(spawnedObject);
 
             // SET SPAWN POSITION/TRANSFORM
             spawnedObject.GlobalTransform = new Transform3D(Basis.Identity, globalSpawnPosition);
@@ -186,6 +155,29 @@ public partial class GameManager : Node
             GD.PrintErr(ex.Message);
             return default(T);
         }
+    }
+
+    public static T? Spawn<T>(Node3D spawnedObject, Vector3 globalSpawnPosition = default(Vector3)) where T : Node3D
+    {
+        if (spawnedObject == null)
+        {
+            GD.PrintErr("Failed to spawn object: Target spawned object is null");
+            return default(T);
+        }
+
+        // DUPLICATE THE TARGET OBJECT
+        T duplicateObject = (T)spawnedObject.Duplicate();
+
+        CheckIfPlayer(duplicateObject);
+        // ADD TO LIST IF APPLICABLE
+
+        // SET SPAWN POSITION/TRANSFORM
+        duplicateObject.GlobalTransform = new Transform3D(Basis.Identity, globalSpawnPosition);
+
+        // ADD TO SCENE
+        s_MainNode.AddChild(duplicateObject);
+
+        return duplicateObject;
     }
 
     public static void DespawnPlayer(Player player)
@@ -225,6 +217,57 @@ public partial class GameManager : Node
 
     public static void SetPlayerScene(PackedScene playerScene) { s_PlayerScene = playerScene; }
     public static void SetLevelScene(PackedScene levelScene) { s_LevelScene = levelScene; }
+
+    private void SetGameActive(bool isActive)
+    {
+        if (s_IsGameActive != isActive)
+        {
+            s_IsGameActive = isActive;
+            if (s_IsGameActive)
+            {
+                EmitSignal(nameof(GameActive));
+            }
+        }
+    }
+
+    private static void CheckIfPlayer(Node3D spawnedObject)
+    {
+        if (spawnedObject is Player player)
+        {
+            GD.Print("Spawned object is a Player, adding to GameManager player list.");
+            s_Players.Add(player);
+
+            switch (s_Players.Count)
+            {
+                case 1:
+                    GD.Print("Spawned Player 1");
+                    // FIXME: Why is there two names?
+                    player.Name = "PlayerOne";
+                    player.m_Name = "PlayerOne";
+                    break;
+                case 2:
+                    GD.Print("Spawned Player 2");
+                    player.Name = "PlayerTwo";
+                    player.m_Name = "PlayerTwo";
+                    break;
+                case 3:
+                    GD.Print("Spawned Player 3");
+                    player.Name = "PlayerThree";
+                    player.m_Name = "PlayerThree";
+                    break;
+                case 4:
+                    GD.Print("Spawned Player 4");
+                    player.Name = "PlayerFour";
+                    player.m_Name = "PlayerFour";
+                    break;
+                default:
+                    GD.Print("Spawned Player " + s_Players.Count);
+                    // FIXME: DESPAWN PLAYER AS THE MAX IS 4
+                    break;
+            }
+        }
+    }
+
 
     // TODO: public static void QuitToMainMenu()
 }

@@ -6,9 +6,9 @@ using Game.Networking;
 
 public partial class MainMenuUI : Control
 {
-    Button m_StartButton;
-    Button m_HostButton;
-    Button m_JoinButton;
+    Button m_StartButton = default!;
+    Button m_HostButton = default!;
+    Button m_JoinButton = default!;
 
     public override void _Ready()
     {
@@ -39,7 +39,7 @@ public partial class MainMenuUI : Control
         GD.Print("Start Pressed");
         this.Visible = false;
         GameManager.s_StateMachine.ChangeState(new SinglePlayerGameState());
-        GameManager.StartGame();
+        GameManager.Instance.StartGame();
     }
 
     public void _On_Host_Button_Pressed()
