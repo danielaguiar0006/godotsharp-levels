@@ -1,11 +1,11 @@
 using Godot;
 using static InputActions;
-using Game.StateMachines;
 
+namespace Game.StateMachines;
 
-public partial class MoveState : State<Player>
+public partial class MoveState<T> : IPlayerState<T> where T : Player
 {
-    public override State<Player>? OnEnterState(Player player)
+    public IPlayerState<T>? OnEnterState(T playerOwner)
     {
         // HACK: Perform an immediate physics update to avoid delay in state transition
         // This help alleviate an issue of the player moving at half speed when constantly
@@ -19,7 +19,7 @@ public partial class MoveState : State<Player>
         return null;
     }
 
-    public override State<Player>? HandleInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleInput(T playerOwner, InputEvent @event)
     {
         // Checking mouse button events
         if (@event is InputEventMouseButton mouseButtonEvent && Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -27,52 +27,52 @@ public partial class MoveState : State<Player>
             // Transition to the attack state if the attack button is pressed
             if (mouseButtonEvent.IsActionPressed(s_AttackLight))
             {
-                return new AttackLightState();
+                return new AttackLightState<T>();
             }
         }
-        if (Input.IsActionJustPressed(s_MoveJump) && player.IsOnFloor())
+        if (Input.IsActionJustPressed(s_MoveJump) && playerOwner.IsOnFloor())
         {
-            return new JumpState();
+            return new JumpState<T>();
         }
 
         if (Input.IsActionJustPressed(s_MoveDodge))
         {
-            return new DodgeState();
+            return new DodgeState<T>();
         }
 
         return null;
     }
 
-    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleKeyboardInput(T playerOwner, InputEvent @event)
     {
         return null;
     }
 
-    public override State<Player>? Process(Player player, double delta)
+    public IPlayerState<T>? Process(T playerOwner, double delta)
     {
 
         return null;
     }
 
-    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
+    public IPlayerState<T>? PhysicsProcess(T playerOwner, double delta, ref Vector3 velocity)
     {
-        player.ApplyMovementInputToVector(ref velocity);
+        playerOwner.ApplyMovementInputToVector(ref velocity);
 
         // Transition to the idle state if the player is not moving
         if (velocity.Length() == 0)
         {
-            return new IdleState();
+            return new IdleState<T>();
         }
 
         // Transition to the fall state if the player falling
-        if (!player.IsOnFloor() && velocity.Y < 0.0f)
+        if (!playerOwner.IsOnFloor() && velocity.Y < 0.0f)
         {
-            return new FallState();
+            return new FallState<T>();
         }
 
         if (Input.IsActionPressed(s_MoveSprint))
         {
-            return new SprintState();
+            return new SprintState<T>();
         }
 
         // TODO: Implement walking state
@@ -80,7 +80,5 @@ public partial class MoveState : State<Player>
         return null;
     }
 
-    public override void OnExitState(Player player)
-    {
-    }
+    public void OnExitState(T playerOwner) { }
 }

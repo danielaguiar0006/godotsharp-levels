@@ -1,16 +1,16 @@
 using Godot;
 using static InputActions;
-using Game.StateMachines;
 
+namespace Game.StateMachines;
 
-public partial class IdleState : State<Player>
+public partial class IdleState<T> : IPlayerState<T> where T : Player
 {
-    public override State<Player>? OnEnterState(Player player)
+    public IPlayerState<T>? OnEnterState(T playerOwner)
     {
         return null;
     }
 
-    public override State<Player>? HandleInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleInput(T playerOwner, InputEvent @event)
     {
         // Checking mouse button events
         if (@event is InputEventMouseButton mouseButtonEvent && Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -18,48 +18,48 @@ public partial class IdleState : State<Player>
             // Transition to the attack state if the attack button is pressed
             if (mouseButtonEvent.IsActionPressed(s_AttackLight))
             {
-                return new AttackLightState();
+                return new AttackLightState<T>();
             }
         }
 
         if (Input.IsActionJustPressed(s_MoveJump))
         {
-            return new JumpState();
+            return new JumpState<T>();
         }
         else if (Input.IsActionJustPressed(s_MoveDodge))
         {
-            return new DodgeState();
+            return new DodgeState<T>();
         }
 
         return null;
     }
 
-    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleKeyboardInput(T playerOwner, InputEvent @event)
     {
         return null;
     }
 
-    public override State<Player>? Process(Player player, double delta)
+    public IPlayerState<T>? Process(T playerOwner, double delta)
     {
         if (Input.IsActionPressed(s_MoveForward) || Input.IsActionPressed(s_MoveBackward) || Input.IsActionPressed(s_MoveLeft) || Input.IsActionPressed(s_MoveRight))
         {
-            return new MoveState();
+            return new MoveState<T>();
         }
 
         return null;
     }
 
-    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
+    public IPlayerState<T>? PhysicsProcess(T playerOwner, double delta, ref Vector3 velocity)
     {
-        if (!player.IsOnFloor() && velocity.Y < 0.0f)
+        if (!playerOwner.IsOnFloor() && velocity.Y < 0.0f)
         {
-            return new FallState();
+            return new FallState<T>();
         }
 
         return null;
     }
 
-    public override void OnExitState(Player player)
+    public void OnExitState(T playerOwner)
     {
     }
 }

@@ -1,26 +1,26 @@
 using Godot;
 using static InputActions;
 using Game.StatsManager;
-using Game.StateMachines;
 
+namespace Game.StateMachines;
 
-public partial class JumpState : State<Player>
+public partial class JumpState<T> : IPlayerState<T> where T : Player
 {
     float appliedJumpVelocityTimeSec;  // Time in seconds that the jump velocity will be applied to the player
     float jumpVelocity;                // The velocity that will be applied to the player when jumping
     bool isJumping;                    // If the player is currently jumping - Is the player in this state?
 
 
-    public override State<Player>? OnEnterState(Player player)
+    public IPlayerState<T>? OnEnterState(T playerOwner)
     {
         appliedJumpVelocityTimeSec = 0.1f;
-        jumpVelocity = player.m_JumpVelocity;
+        jumpVelocity = playerOwner.m_JumpVelocity;
         isJumping = true;
 
         return null;
     }
 
-    public override State<Player>? HandleInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleInput(T playerOwner, InputEvent @event)
     {
         // Checking mouse button events
         if (@event is InputEventMouseButton mouseButtonEvent && Input.MouseMode == Input.MouseModeEnum.Captured)
@@ -28,36 +28,36 @@ public partial class JumpState : State<Player>
             // Transition to the attack state if the attack button is pressed
             if (mouseButtonEvent.IsActionPressed(s_AttackLight))
             {
-                return new AttackLightState();
+                return new AttackLightState<T>();
             }
         }
 
         if (Input.IsActionJustPressed(s_MoveDodge))
         {
-            return new DodgeState();
+            return new DodgeState<T>();
         }
 
         return null;
     }
 
-    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleKeyboardInput(T playerOwner, InputEvent @event)
     {
         return null;
     }
 
-    public override State<Player>? Process(Player player, double delta)
+    public IPlayerState<T>? Process(T playerOwner, double delta)
     {
         appliedJumpVelocityTimeSec -= (float)delta;
 
         return null;
     }
 
-    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
+    public IPlayerState<T>? PhysicsProcess(T playerOwner, double delta, ref Vector3 velocity)
     {
         if (isJumping)
         {
-            float jumpSpeedMovementFactor = Input.IsActionPressed(s_MoveSprint) ? player.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.SprintSpeedFactor] : 1.0f;
-            player.ApplyMovementInputToVector(ref velocity, jumpSpeedMovementFactor);
+            float jumpSpeedMovementFactor = Input.IsActionPressed(s_MoveSprint) ? playerOwner.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.SprintSpeedFactor] : 1.0f;
+            playerOwner.ApplyMovementInputToVector(ref velocity, jumpSpeedMovementFactor);
 
             if (appliedJumpVelocityTimeSec > 0.0f)
             {
@@ -68,26 +68,24 @@ public partial class JumpState : State<Player>
         else
         {
             GD.Print("ERROR: Stuck in the JumpState!, transitioning to FallState.");
-            return new FallState();
+            return new FallState<T>();
         }
 
         // Transition to the idle state if the player is not moving
         if (velocity.Length() == 0)
         {
-            return new IdleState();
+            return new IdleState<T>();
         }
 
         // Transition to the fall state if the player falling
-        if (!player.IsOnFloor() && velocity.Y < 0.0f)
+        if (!playerOwner.IsOnFloor() && velocity.Y < 0.0f)
         {
-            return new FallState();
+            return new FallState<T>();
         }
 
         return null;
     }
 
-    public override void OnExitState(Player player)
-    {
-    }
+    public void OnExitState(T playerOwner) { }
 }
 

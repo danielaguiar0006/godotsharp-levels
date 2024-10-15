@@ -1,17 +1,18 @@
 using Godot;
 using System.Diagnostics;
 
-public class StateMachine<T>
+namespace Game.StateMachines;
+public class PlayerStateMachine<T> where T : Player
 {
     public T m_Owner { get; private set; }
-    public State<T> m_CurrentState { get; private set; }
+    public IPlayerState<T>? m_CurrentState { get; private set; }
 
-    public StateMachine(T owner)
+    public PlayerStateMachine(T owner)
     {
         m_Owner = owner;
     }
 
-    public void ChangeState(State<T> newState)
+    public void ChangeState(IPlayerState<T> newState)
     {
         Debug.Assert(newState != null, "New state cannot be null");
 
@@ -25,7 +26,7 @@ public class StateMachine<T>
         m_CurrentState = newState;
 
         // CAPTURE POSSIBLE NEXT STATE
-        State<T>? nextState = m_CurrentState.OnEnterState(m_Owner);
+        IPlayerState<T>? nextState = m_CurrentState.OnEnterState(m_Owner);
 
         // CHANGE STATE IF NEXT STATE IS NOT NULL
         if (nextState != null)
@@ -51,7 +52,7 @@ public class StateMachine<T>
     {
         if (m_CurrentState != null)
         {
-            State<T> newState = m_CurrentState.HandleInput(m_Owner, @event);
+            IPlayerState<T>? newState = m_CurrentState.HandleInput(m_Owner, @event);
             if (newState != null)
             {
                 ChangeState(newState);
@@ -66,7 +67,7 @@ public class StateMachine<T>
     {
         if (m_CurrentState != null)
         {
-            State<T> newState = m_CurrentState.HandleKeyboardInput(m_Owner, @event);
+            IPlayerState<T>? newState = m_CurrentState.HandleKeyboardInput(m_Owner, @event);
             if (newState != null)
             {
                 ChangeState(newState);
@@ -82,23 +83,7 @@ public class StateMachine<T>
     {
         if (m_CurrentState != null)
         {
-            State<T> newState = m_CurrentState.Process(m_Owner, delta);
-            if (newState != null)
-            {
-                ChangeState(newState);
-            }
-        }
-    }
-
-    // Called during the physics processing step of the main loop.
-    // Physics processing means that the frame rate is synced to the physics,
-    // i.e. the `delta` variable should be constant (`delta` is in seconds).
-    // returns the new state if the state changes, otherwise returns null
-    public void PhysicsProcess(double delta)
-    {
-        if (m_CurrentState != null)
-        {
-            State<T> newState = m_CurrentState.PhysicsProcess(m_Owner, delta);
+            IPlayerState<T>? newState = m_CurrentState.Process(m_Owner, delta);
             if (newState != null)
             {
                 ChangeState(newState);
@@ -114,7 +99,7 @@ public class StateMachine<T>
     {
         if (m_CurrentState != null)
         {
-            State<T> newState = m_CurrentState.PhysicsProcess(m_Owner, delta, ref velocity);
+            IPlayerState<T>? newState = m_CurrentState.PhysicsProcess(m_Owner, delta, ref velocity);
             if (newState != null)
             {
                 ChangeState(newState);

@@ -2,10 +2,10 @@ using Godot;
 using static InputActions;
 using Game.ActionTypes;
 using Game.StatsManager;
-using Game.StateMachines;
 
+namespace Game.StateMachines;
 
-public partial class DodgeState : State<Player>
+public partial class DodgeState<T> : IPlayerState<T> where T : Player
 {
     // How long the dodge will last, animations and all
     private float currentDodgeTimeSec;
@@ -19,50 +19,50 @@ public partial class DodgeState : State<Player>
     private Transform3D targetCameraTransform;
 
 
-    public override State<Player>? OnEnterState(Player player)
+    public IPlayerState<T>? OnEnterState(T playerOwner)
     {
-        switch (player.m_DodgeType)
+        switch (playerOwner.m_DodgeType)
         {
             case DodgeType.Roll:
                 // NOTE: This is done here and not in the physics process because physics
                 // process is called once every physics tick, not asap, which causes a delay bug
-                if (!player.IsOnFloor())
+                if (!playerOwner.IsOnFloor())
                 {
                     GD.Print("Rolling in the air is not allowed");
-                    return new MoveState();
+                    return new MoveState<T>();
                 }
 
                 currentDodgeTimeSec = 0.5f;
                 totalDodgeTimeSec = currentDodgeTimeSec;
-                rollSpeedFactor *= player.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.DodgeSpeedFactor];
+                rollSpeedFactor *= playerOwner.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.DodgeSpeedFactor];
 
                 // Play the roll animation
                 break;
             case DodgeType.Dash:
                 currentDodgeTimeSec = 0.33f;
                 totalDodgeTimeSec = currentDodgeTimeSec;
-                dashSpeedFactor *= player.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.DodgeSpeedFactor];
+                dashSpeedFactor *= playerOwner.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.DodgeSpeedFactor];
 
                 // Play the dash animation
                 break;
         }
 
-        targetCameraTransform = player.GetNode<Node3D>("CameraPivot/TargetCamera").GlobalTransform;
+        targetCameraTransform = playerOwner.GetNode<Node3D>("CameraPivot/TargetCamera").GlobalTransform;
 
         return null;
     }
 
-    public override State<Player>? HandleInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleInput(T playerOwner, InputEvent @event)
     {
         return null;
     }
 
-    public override State<Player>? HandleKeyboardInput(Player player, InputEvent @event)
+    public IPlayerState<T>? HandleKeyboardInput(T playerOwner, InputEvent @event)
     {
         return null;
     }
 
-    public override State<Player>? Process(Player player, double delta)
+    public IPlayerState<T>? Process(T playerOwner, double delta)
     {
         currentDodgeTimeSec -= (float)delta;
 
@@ -70,40 +70,40 @@ public partial class DodgeState : State<Player>
     }
 
     // Dodge the player - Affected by player's dodge type, speed factor, regular movement speed, dodge time, and movement direction
-    public override State<Player>? PhysicsProcess(Player player, double delta, ref Vector3 velocity)
+    public IPlayerState<T>? PhysicsProcess(T playerOwner, double delta, ref Vector3 velocity)
     {
         if (currentDodgeTimeSec < 0.0f)
         {
-            return new MoveState();
+            return new MoveState<T>();
         }
 
 
         Vector3 wishDirection;
-        if (player.m_MovementDirection != Vector3.Zero) // if player is moving, dodge in the direction the player is moving
+        if (playerOwner.m_MovementDirection != Vector3.Zero) // if player is moving, dodge in the direction the player is moving
         {
-            wishDirection = player.m_MovementDirection; // NOTE: m_MovementDirection is already normalized
+            wishDirection = playerOwner.m_MovementDirection; // NOTE: m_MovementDirection is already normalized
         }
         else  // else dodge in the direction the player is looking
         {
             wishDirection = -targetCameraTransform.Basis.Z.Normalized(); // Forward direction of the camera
         }
 
-        switch (player.m_DodgeType)
+        switch (playerOwner.m_DodgeType)
         {
             case DodgeType.Roll:
                 //rollSpeedFactor *= player.m_Stats.GetSpecialStatAmountFactors()[SpecialStatType.MovementSpeedFactor];
-                player.ApplyMovementDirectionToVector(ref velocity, wishDirection, rollSpeedFactor);
+                playerOwner.ApplyMovementDirectionToVector(ref velocity, wishDirection, rollSpeedFactor);
                 // NOTE: Vertical velocity is not disabled to enable gravity, letting the player roll off ledges
                 break;
             case DodgeType.Dash:
                 // ------ Calculate the easing out ------
                 // Ease into sprint speed factor if sprint button is pressed or into the regular movement speed factor (usually 1.0f)
-                float easeOutTo = Input.IsActionPressed(s_MoveSprint) ? player.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.SprintSpeedFactor] : 1.0f;
+                float easeOutTo = Input.IsActionPressed(s_MoveSprint) ? playerOwner.m_MobStats.m_SpecialStatTypeToAmountFactor[SpecialStatType.SprintSpeedFactor] : 1.0f;
                 float dashProgress = 1.0f - (currentDodgeTimeSec / totalDodgeTimeSec);
                 float easedDashSpeedFactor = Mathf.Lerp(dashSpeedFactor, easeOutTo, 1.0f - Mathf.Pow(1.0f - dashProgress, 2));
                 // --------------------------------------
 
-                player.ApplyMovementDirectionToVector(ref velocity, wishDirection, easedDashSpeedFactor);
+                playerOwner.ApplyMovementDirectionToVector(ref velocity, wishDirection, easedDashSpeedFactor);
                 velocity.Y = 0; // Disables vertical movement (including gravity) - IDK: Maybe another dodge type that allows vertical movement
                 break;
         }
@@ -111,7 +111,5 @@ public partial class DodgeState : State<Player>
         return null;
     }
 
-    public override void OnExitState(Player player)
-    {
-    }
+    public void OnExitState(T playerOwner) { }
 }

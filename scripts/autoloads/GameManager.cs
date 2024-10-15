@@ -13,10 +13,10 @@ using Game.Networking;
 
 public partial class GameManager : Node
 {
-    public static GameManager Instance { get; private set; }
+    public static GameManager Instance { get; private set; } = null!;
     public static bool s_ForceOffline { get; private set; } = false; // TODO: REMOVE FOR RELEASE
 
-    public static StateMachine<GameManager> s_StateMachine { get; private set; }
+    public static GameStateMachine s_StateMachine { get; private set; } = new GameStateMachine();
     [Signal]
     public delegate void GameActiveEventHandler();
     public static bool s_IsGameActive { get; private set; } = false;
@@ -41,9 +41,6 @@ public partial class GameManager : Node
         Instance = this;
         GD.Print("GameManager ready");
 
-        // INIT STATE MACHINE
-        s_StateMachine = new StateMachine<GameManager>(this);
-
         // GET MAIN NODE
         s_MainNode = GetTree().CurrentScene;
 
@@ -61,25 +58,12 @@ public partial class GameManager : Node
         // THE MAIN MENU UI IS IN CHARGE OF SETTING THE INITIAL GameState + CALLING StartGame()
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public void StartGame()
     {
-        if (!s_IsGameActive) { return; }
+        GD.Print("Starting Game");
 
-        s_StateMachine.HandleInput(@event);
-    }
-
-    public override void _UnhandledKeyInput(InputEvent @event)
-    {
-        if (!s_IsGameActive) { return; }
-
-        s_StateMachine.HandleKeyboardInput(@event);
-    }
-
-    public override void _Process(double delta)
-    {
-        if (!s_IsGameActive) { return; }
-
-        s_StateMachine.Process(delta);
+        SetGameActive(true);
+        s_StateMachine.StartGame();
     }
 
     public override void _PhysicsProcess(double delta)
@@ -89,26 +73,10 @@ public partial class GameManager : Node
         s_StateMachine.PhysicsProcess(delta);
     }
 
-    public void StartGame()
-    {
-        GD.Print("Starting Game");
-
-        SetGameActive(true);
-        s_StateMachine.m_CurrentState.StartGame(s_StateMachine.m_Owner);
-    }
-
     public static void QuitApplication()
     {
         s_MainNode.GetTree().Quit();
     }
-
-    // public static Player SpawnPlayer()
-    // {
-    //     Player player = s_PlayerScene.Instantiate<Player>();
-    //     s_Players.Add(player);
-    //     s_MainNode.AddChild(player);
-    //     return player;
-    // }
 
     public static T? Spawn<T>(string targetScenePath, Vector3 globalSpawnPosition = default(Vector3)) where T : Node3D
     {
@@ -180,40 +148,40 @@ public partial class GameManager : Node
         return duplicateObject;
     }
 
-    public static void DespawnPlayer(Player player)
-    {
-        if (!s_Players.Contains(player))
-        {
-            GD.PrintErr("[ERROR] Unable to despawn player, player not found");
-            return;
-        }
-        s_Players.Remove(player);
-        s_MainNode.RemoveChild(player);
-        player.QueueFree();
-    }
+    // public static void DespawnPlayer(Player player)
+    // {
+    //     if (!s_Players.Contains(player))
+    //     {
+    //         GD.PrintErr("[ERROR] Unable to despawn player, player not found");
+    //         return;
+    //     }
+    //     s_Players.Remove(player);
+    //     s_MainNode.RemoveChild(player);
+    //     player.QueueFree();
+    // }
 
-    public static Level SpawnLevel()
-    {
-        if (s_Level != null)
-        {
-            GD.PrintErr("[ERROR] Unable to spawn level, level already exists");
-            return null;
-        }
-        s_Level = s_LevelScene.Instantiate<Level>(); // INSTANTIATE LEVEL
-        s_MainNode.AddChild(s_Level);                // ADD LEVEL TO THE SCENE
-        return s_Level;
-    }
+    // public static Level SpawnLevel()
+    // {
+    //     if (s_Level != null)
+    //     {
+    //         GD.PrintErr("[ERROR] Unable to spawn level, level already exists");
+    //         return null;
+    //     }
+    //     s_Level = s_LevelScene.Instantiate<Level>(); // INSTANTIATE LEVEL
+    //     s_MainNode.AddChild(s_Level);                // ADD LEVEL TO THE SCENE
+    //     return s_Level;
+    // }
 
-    public static void DespawnLevel()
-    {
-        if (s_Level == null)
-        {
-            GD.PrintErr("[ERROR] Unable to despawn level, level does not exist");
-            return;
-        }
-        s_MainNode.RemoveChild(s_Level);
-        s_Level.QueueFree();
-    }
+    // public static void DespawnLevel()
+    // {
+    //     if (s_Level == null)
+    //     {
+    //         GD.PrintErr("[ERROR] Unable to despawn level, level does not exist");
+    //         return;
+    //     }
+    //     s_MainNode.RemoveChild(s_Level);
+    //     s_Level.QueueFree();
+    // }
 
     public static void SetPlayerScene(PackedScene playerScene) { s_PlayerScene = playerScene; }
     public static void SetLevelScene(PackedScene levelScene) { s_LevelScene = levelScene; }

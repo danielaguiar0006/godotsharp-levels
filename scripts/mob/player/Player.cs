@@ -19,7 +19,7 @@ public partial class Player : Mob
     [Export]
     public RayCast3D m_Raycast { get; private set; }
 
-    public StateMachine<Player> m_StateMachine { get; private set; }
+    public PlayerStateMachine<Player> m_StateMachine { get; private set; }
 
     // Aiming/Camera input
     private float m_YawInput = 0.0f;
@@ -31,7 +31,7 @@ public partial class Player : Mob
     {
         m_Name = "Player";
         SetMobType(MobType.Player);
-        m_StateMachine = new StateMachine<Player>(this);
+        m_StateMachine = new PlayerStateMachine<Player>(this);
     }
 
     public override void _Ready()
@@ -50,7 +50,7 @@ public partial class Player : Mob
         m_Camera.Current = true;
 
         // Set the players initial state here
-        m_StateMachine.ChangeState(new IdleState());
+        m_StateMachine.ChangeState(new IdleState<Player>());
     }
 
     public override void _UnhandledInput(InputEvent @event)
