@@ -8,6 +8,7 @@ using Godot;
 using static InputActions;
 using Game.StatsManager;
 using ImGuiNET;
+using System.Collections.Generic;
 
 // The Debug Overlay Shows debug information related to the player's state, stats, and other information
 public partial class DebugOverlayUI : Node
@@ -61,7 +62,39 @@ public partial class DebugOverlayUI : Node
     {
         bool isActive = true;
 
-        ImGui.Begin("Player Menu", ref isActive);
+        ImGui.Begin("Player Debug Menu", ref isActive);
+
+        if (m_Owner.m_ComponentManager != null)
+        {
+            // FIXME: This is all really janky - I Cant remove a component from a list while traversing it or ImGUI freaks out
+            if (ImGui.Button("Add Health Regen Component"))
+            {
+                m_Owner.m_ComponentManager.AddComponent<HealthRegenComponent>();
+            }
+
+            if (ImGui.Button("Remove Health Regen Component"))
+            {
+                m_Owner.m_ComponentManager.RemoveComponent<HealthRegenComponent>();
+            }
+
+            List<ComponentBase> m_ComponentsToRemove = new List<ComponentBase>(m_Owner.m_ComponentManager.m_Components.Count);
+
+            foreach (ComponentBase component in m_Owner.m_ComponentManager.m_Components)
+            {
+                if (ImGui.Button($"Remove {component.GetType().Name} Component"))
+                {
+                    m_ComponentsToRemove.Add(component);
+                }
+            }
+            foreach (ComponentBase component in m_ComponentsToRemove)
+            {
+                m_Owner.m_ComponentManager.RemoveComponent(component);
+            }
+        }
+        else
+        {
+            ImGui.Text("Missing Options due to missing ComponentManager node");
+        }
 
         if (ImGui.BeginTable("General", 2, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
         {
@@ -212,4 +245,3 @@ public partial class DebugOverlayUI : Node
     // }
     //
 }
-

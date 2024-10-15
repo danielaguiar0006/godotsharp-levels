@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using static InputActions;
 using Game.StatsManager;
@@ -24,19 +25,18 @@ public partial class Mob : CharacterBody3D
     [Export]
     public float m_MovementSpeed { get; private set; } = 5.0f;
     [Export]
-    public MobState m_CurrentMobState { get; protected set; } = null;
-    [Export]
     public Vector3 m_MovementDirection { get; private set; } = Vector3.Zero; // Where the mob is moving towards
     [Export]
     public float m_JumpVelocity = 4.0f;
     [Export]
     public Item[] m_InventoryItems { get; private set; }
     // TODO: Make an inventory class & object which handles storing items, equiping, and unequiping items (Basically an InvenotryManager):
+    [Export]
+    public ComponentManager? m_ComponentManager { get; private set; } = null!;
 
     // Get the gravity from the project settings to be synced with RigidBody nodes
     public Dictionary<Item.ItemSlot, Item> m_EquipedItems { get; private set; } = new Dictionary<Item.ItemSlot, Item>();
     public MobStats m_MobStats { get; private set; } = new MobStats();
-
 
     // moveSpeedFactor can be used for slower or faster movement (walking, running, etc...)
     public void ApplyMobMovement(ref Vector3 velocity)
@@ -199,7 +199,7 @@ public partial class Mob : CharacterBody3D
         }
         else
         {
-            AddItemToInventory(item);
+            //AddItemToInventory(item);
         }
     }
 
@@ -231,31 +231,14 @@ public partial class Mob : CharacterBody3D
     }
 
     // TODO:
-    public void AddItemToInventory(Item item)
-    {
-        if (item == null || !item.m_IsPickupable)
-        {
-            return;
-        }
-        // TODO: Add item to inventory
-    }
-
-    // Change the mob's state
-    public void TransitionToState(MobState newState)
-    {
-        if (newState != null)
-        {
-            if (m_CurrentMobState != null) { m_CurrentMobState.OnExitState(this); } // Exit current state 
-            m_CurrentMobState = newState;        // Set the new state
-            MobState nextState = m_CurrentMobState.OnEnterState(this); // Enter the new state
-
-            // If the OnEnterState of the new state returns another state, transition again
-            if (nextState != null)
-            {
-                TransitionToState(nextState);
-            }
-        }
-    }
+    // public void AddItemToInventory(Item item)
+    // {
+    //     if (item == null || !item.m_IsPickupable)
+    //     {
+    //         return;
+    //     }
+    //     // TODO: Add item to inventory
+    // }
 
     // -------------------------------------------
     // Setters
